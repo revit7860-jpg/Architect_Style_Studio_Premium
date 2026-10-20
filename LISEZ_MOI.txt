@@ -1,0 +1,36 @@
+ARCHITECT STYLE STUDIO PREMIUM V2.3
+
+1. Extraire tout le ZIP dans un dossier Windows ordinaire (pas directement depuis le ZIP).
+2. Exécuter DEMARRAGE_WINDOWS.bat.
+3. Saisir la clé API Gemini dans la fenêtre locale (la saisie est masquée), ou laisser vide pour le mode manuel. Ne jamais communiquer cette clé.
+4. Le navigateur s'ouvre automatiquement sur http://127.0.0.1:8765 (sinon l'ouvrir à la main).
+5. Importer une image ou un PDF puis attendre le message « Plan chargé ».
+6. Cliquer sur « Analyser avec Gemini » (facultatif), vérifier la fiche, choisir un style, copier le prompt.
+
+CHANGEMENTS V2.3
+- Liste « Meubles dessinés » avec une case à cocher par ligne : décochez une ligne pour l'exclure du prompt. Les plantes, tapis et autres éléments de décor sont décochés par défaut (badge « décor ? »), ainsi que les lignes marquées [supposé]. L'état des cases est sauvegardé avec les réglages.
+- Balise [supposé] : l'analyse Gemini marque ce qu'elle déduit sans le lire sur le plan. Ces phrases ou lignes restent dans la fiche mais sont exclues du prompt tant que la balise est présente. Supprimez la balise après vérification pour les inclure.
+- Avertissements au-dessus du prompt : nombre de chambres incohérent avec la fiche (ex. « une chambre » ou « T2 » alors que le réglage indique 3), décor inclus alors que le prompt interdit d'en ajouter, liste de meubles ignorée sur un plan vide, éléments [supposé] exclus.
+- L'analyse règle aussi le nombre de chambres (sauf si vous l'avez déjà modifié à la main ; la case « Écraser » force le réglage).
+- Le titre affiche V2.3.
+
+CHANGEMENTS V2.2
+- Hachures : nouveau réglage « Hachures du plan » (structure, sol, les deux, aucune). Avant, le prompt demandait toujours de transformer les hachures en sol, ce qui pouvait effacer poteaux et murs porteurs.
+- « État du plan » : plan déjà meublé (le prompt restyle uniquement les meubles dessinés et n'en ajoute aucun) ou plan vide (le prompt meuble). Nouveau champ « Meubles dessinés sur le plan », rempli par l'analyse Gemini ou à la main.
+- Un plan à 1 chambre ne produit plus de « suite parentale », de « chambres secondaires » ni de bureaux ajoutés.
+- L'emprise non rectangulaire (mur oblique) est explicitement conservée.
+- Cotes et incertitudes ne sont plus recopiées dans le prompt par défaut (case à cocher pour les inclure). Le prompt demande de supprimer cotes, libellés et titre du plan.
+- Le format de sortie est réglé automatiquement sur le ratio le plus proche du plan importé (image), modifiable.
+- L'analyse Gemini renvoie aussi la liste des meubles dessinés.
+
+CHANGEMENTS V2.1
+- Prompt généré réécrit : caméra 75-80° (rendu en coupe), mode compact (environ 330 mots) ou complet (environ 440 mots), champs vides omis, rôles des images, plus de mentions inutiles (moteur de rendu, résolution).
+- Le style Classic Mid-Century Modern attribuait le mauvais mobilier aux pièces : corrigé.
+- Le type de rendu « Vue 2D aménagée texturée » change maintenant réellement le prompt.
+- L'analyse Gemini ne remplace plus les champs que vous avez déjà remplis (case « Écraser » pour forcer).
+- Champ « Modèle Gemini » dans l'interface (vide = modèle par défaut du serveur, variable GEMINI_MODEL).
+- Serveur durci : seul index.html est servi, requêtes refusées si Host ou Origin ne sont pas ceux du serveur local, en-tête de requête obligatoire sur /api/analyze.
+- Le navigateur s'ouvre une fois le serveur prêt ; plus de cache obsolète (Ctrl+F5 inutile).
+
+Si une ancienne instance du serveur tourne, la fermer (Ctrl+C) avant relance.
+Variables facultatives : GEMINI_MODEL, APP_PORT, NO_BROWSER=1.

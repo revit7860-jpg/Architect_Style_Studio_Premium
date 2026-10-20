@@ -1,0 +1,324 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Architect Style Studio Premium V2.3</title><style>
+:root{font-family:Inter,system-ui,Arial,sans-serif;color:#e9e9ed;background:#10131b}*{box-sizing:border-box}body{margin:0}header{padding:24px max(20px,calc((100vw - 1320px)/2));border-bottom:1px solid #303442;background:#181d29}h1{margin:0;font-size:27px}h2{font-size:17px;margin:0 0 16px}p,.hint{color:#aeb4c2;font-size:13px;line-height:1.55}.pill{color:#a8f0d0;background:#1e453b;border-radius:18px;padding:5px 10px;font-size:11px}main{max-width:1360px;margin:auto;padding:22px;display:grid;grid-template-columns:360px minmax(0,1fr);gap:17px}.panel{background:#1b202c;border:1px solid #353b4b;border-radius:16px;padding:19px;margin-bottom:17px}label{display:block;color:#d8dae1;font-size:13px;font-weight:600;margin:13px 0 6px}input,select,textarea{width:100%;border:1px solid #424a5f;border-radius:9px;background:#101722;color:#fff;padding:11px;font:inherit;font-size:13px}textarea{resize:vertical;min-height:90px}.controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 12px}button{background:#cfad76;color:#171b21;border:0;border-radius:9px;padding:11px 15px;cursor:pointer;font-weight:700;margin:7px 7px 0 0}button.secondary{background:#303949;color:#e8e8ec}button:hover{filter:brightness(1.08)}button:disabled{opacity:.5;cursor:wait}.preview{height:118px;border-radius:12px;margin:12px 0;position:relative;overflow:hidden;background:linear-gradient(145deg,var(--c1),var(--c2));border:1px solid #626876}.preview:after{content:"";position:absolute;inset:20px 25px;border:12px solid var(--c3);border-radius:20px;box-shadow:70px 0 0 -12px var(--c4),-105px 16px 0 -40px #e9e6e0;transform:rotate(-10deg)}.swatches{display:flex;gap:7px}.swatches i{height:25px;flex:1;border-radius:6px;border:1px solid #727884}#planPreview{width:100%;height:245px;object-fit:contain;background:#10151e;border-radius:12px;border:1px dashed #535e73}#pdfPreview{width:100%;height:300px;display:none;background:white;border-radius:12px}.boxgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}pre{white-space:pre-wrap;word-wrap:break-word;border-radius:12px;border:1px solid #464d60;background:#10151f;padding:17px;max-height:650px;overflow:auto;font-size:12px;line-height:1.65;color:#d5e2ec}.status{font-size:12px;color:#d8d1ae}.notice{background:#292a27;border-left:3px solid #cfad76;padding:12px;font-size:12px;line-height:1.6;color:#e4dcc8;border-radius:5px}.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:990px){main{grid-template-columns:1fr}.controls{grid-template-columns:1fr 1fr}}@media(max-width:540px){.boxgrid,.controls,.two{grid-template-columns:1fr}header{padding:20px}}
+</style></head><body><header><h1>Architect Style Studio <span style="color:#cfad76">Premium V2.3</span></h1><p>Plan 2D → fiche architecturale → 16 prompts Gemini Nano Banana 2</p><span class="pill">HYBRIDE · MANUEL HORS LIGNE + ANALYSE GEMINI OPTIONNELLE</span></header><main><aside><section class="panel"><h2>01 · Importer le plan architectural</h2><input type="file" id="plan" accept="image/png,image/jpeg,image/webp,application/pdf"><p>Images PNG, JPG, WEBP et PDF. Pour DWG/DXF, exporter au préalable en image ou PDF.</p><img id="planPreview" alt="Aperçu du plan" hidden><iframe id="pdfPreview" title="Aperçu PDF"></iframe><div id="noPreview" class="notice">Aucun plan importé. Le mode de rédaction manuel reste disponible.</div><button id="analyze">Analyser avec Gemini</button><p id="aiStatus" class="status">Analyse facultative : nécessite le serveur local et une clé API Gemini.</p><label for="model">Modèle Gemini (facultatif)</label><input id="model" placeholder="Vide = modèle par défaut du serveur" autocomplete="off"><label style="display:flex;gap:8px;align-items:center;font-weight:400"><input type="checkbox" id="overwrite" style="width:auto;margin:0"> Écraser les champs déjà remplis lors de l’analyse</label></section><section class="panel"><h2>02 · Style et ambiance</h2><label for="style">Style d'architecture intérieure</label><select id="style"></select><div class="preview" id="preview"></div><div class="swatches" id="swatches"></div><p id="styleDescription"></p><label>Palette personnalisée (facultatif)</label><input id="palette" placeholder="Ex. noyer chocolat, cuir noir, chrome"><label>Matériaux additionnels ou remplacements</label><textarea id="materials" placeholder="Ex. sols en travertin clair, tête de lit en noyer..."></textarea></section><section class="panel"><h2>03 · Rendu et programme</h2><div class="controls"><div><label>Nombre de chambres</label><select id="bedrooms"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></div><div><label>Suite parentale</label><select id="master"><option>Oui</option><option>Non</option></select></div><div><label>Type de rendu</label><select id="render"><option>Vue 3D du dessus, coupe architecturale</option><option>Vue 2D aménagée texturée</option></select></div><div><label>Format</label><select id="ratio"><option>16:9</option><option>4:3</option><option>3:2</option><option>1:1</option><option>9:16</option></select></div><div><label>Éclairage</label><select id="lighting"><option>Lumière naturelle neutre</option><option>Ambiance chaude fin de journée</option><option>Mix lumière naturelle et LED chaudes</option><option>Ambiance nocturne</option></select></div><div><label>Conservation du plan</label><select id="fidelity"><option>Priorité absolue</option><option>Strictement conserver la structure, permettre des meubles différents</option></select></div><div><label for="mode">Longueur du prompt</label><select id="mode"><option>Compact</option><option>Complet</option></select></div><div><label for="refimg">Image de référence de style</label><select id="refimg"><option>Aucune</option><option>Jointe (Image 2)</option></select></div><div><label for="furnished">État du plan</label><select id="furnished"><option>Plan déjà meublé (restyler uniquement)</option><option>Plan vide (meubler)</option></select></div><div><label for="hatch">Hachures du plan</label><select id="hatch"><option>Structure (poteaux et murs porteurs)</option><option>Sol (revêtement hachuré)</option><option>Structure et sol</option><option>Aucune hachure</option></select></div></div><label>Autres contraintes</label><textarea id="extras" placeholder="Ex. ne pas inclure de sauna ; WC proche de la gaine technique ; conserver tous les balcons."></textarea></section></aside><div><section class="panel"><h2>04 · Description architecturale éditable</h2><p>La description est intégrée au prompt. Toute analyse IA peut être corrigée ici avant utilisation.</p><label>Vue d'ensemble et répartition</label><textarea id="summary" rows="3" placeholder="Ex. séjour à droite, chambres au centre, suite parentale à gauche..."></textarea><label>Pièces et positions</label><textarea id="rooms" rows="5" placeholder="Une pièce par ligne, avec sa position relative et ses ouvertures connues."></textarea><div class="two"><div><label>Murs, poteaux, structure</label><textarea id="structure" placeholder="Murs porteurs, poteaux et contraintes..."></textarea></div><div><label>Portes, fenêtres, balcons</label><textarea id="openings" placeholder="Accès et ouvertures visibles..."></textarea></div><div><label>Cuisine, WC, eau, évacuations</label><textarea id="wet" placeholder="Gaines, points d'évacuation et alimentation identifiés..."></textarea></div><div><label>Circulation et accès</label><textarea id="circulation" placeholder="Entrée, couloir, passages..."></textarea></div><div><label>Cotes visibles vérifiées</label><textarea id="dimensions" placeholder="Uniquement les valeurs lisibles..."></textarea></div><div><label>Incertitudes à vérifier</label><textarea id="uncertainties" placeholder="Cotes illisibles, murs indéterminés..."></textarea></div><div><label>Meubles dessinés sur le plan (un par ligne)</label><textarea id="furniture" placeholder="Uniquement ce qui est dessiné : lit double, canapé 3 places, évier..."></textarea><div id="furnList" style="margin-top:6px"></div></div><div><label style="display:flex;gap:8px;align-items:center;font-weight:400"><input type="checkbox" id="incl" style="width:auto;margin:0"> Inclure cotes et incertitudes dans le prompt (alourdit)</label></div></div><div class="notice">Important : ne transforme pas une supposition de l'IA en cote certifiée. Le plan original doit aussi être joint dans Gemini lors de la génération.</div></section><section class="panel"><h2>05 · Prompt premium généré</h2><p>Prompt détaillé en anglais. Personnalisé selon le style et la fiche architecturale.</p><div class="two"><button id="copy">Copier le prompt</button><button id="download">Exporter TXT</button><button id="save" class="secondary">Sauvegarder mes réglages</button><button id="reset" class="secondary">Réinitialiser les réglages</button></div><p id="copyStatus" class="status"></p><p id="wordCount" class="status"></p><div id="warnings" class="notice" style="display:none;margin-bottom:10px"></div><pre id="output"></pre></section></div></main><script>
+'use strict';
+/* Styles: one object per style. Each furniture role is explicit (living, dining, kitchen, bed, bath),
+   so no list is split by position any more (the old Mid-Century entry had 7 items and shifted every room).
+   Only things visible from above are described (floors, furniture, textiles, fixtures). */
+const S=[
+{n:'Modern Minimalist',c:['#ede9df','#c5c5bc','#f8f8f4','#b8a68f'],pal:'off-white, ivory, light grey, blond oak',floor:'warm ivory microcement in living areas, pale oak parquet in bedrooms, matte ivory stone-look tiles in bathrooms',living:'low off-white modular sofa, cream armchair, monolithic pale stone coffee table, one neutral rug',dining:'natural oak dining table with slim chairs',kitchen:'flat matte ivory cabinets, light stone worktop, nothing on the counters',bed:'low upholstered beds with simple bedside tables',bath:'white floating vanity, frameless glass shower, matte ivory tiles',note:''},
+{n:'Contemporary Luxury',c:['#e8ddcd','#ae9271','#6d4d3a','#c9ac7c'],pal:'cream, champagne, taupe, walnut, bronze',floor:'polished Calacatta marble in living and dining areas, dark walnut parquet in bedrooms, dark polished stone in bathrooms',living:'large curved cream modular sofa, two sculptural lounge chairs, marble coffee table, neutral rug',dining:'marble or walnut dining table with upholstered chairs',kitchen:'walnut cabinetry, stone worktop, bronze details',bed:'upholstered beds with walnut bedside tables',bath:'dark stone floating vanity, bronze taps',note:'visible marble reflections on the floor'},
+{n:'Warm Modern',c:['#e9d7c2','#b38464','#654633','#f8eee0'],pal:'caramel, beige, walnut brown, warm white',floor:'warm beige limestone-effect tiles in living areas, honey oak parquet in bedrooms, sand-colored stone tiles in bathrooms',living:'soft rounded beige sofa, walnut coffee table, cream lounge chairs, wool rug',dining:'solid walnut dining table with oatmeal chairs',kitchen:'walnut fronts with warm off-white upper units, light travertine worktop',bed:'padded cream beds with wool rugs underneath',bath:'wood-effect vanity, sand-colored tiles',note:'matte surfaces only, no glossy finishes'},
+{n:'Industrial Loft',c:['#a5a5a1','#47494a','#963d30','#332c26'],pal:'concrete grey, black, brick red, cognac',floor:'polished grey concrete-effect tiles in living areas, smoked dark oak parquet in bedrooms, matte charcoal slate in bathrooms',living:'low cognac leather sofa, black metal-framed lounge chairs, reclaimed walnut coffee table, dark rug',dining:'long timber dining table with black metal chairs',kitchen:'charcoal cabinets, dark stone worktop, black steel hardware',bed:'smoked-oak beds with charcoal headboards',bath:'slate-look vanity, black steel fittings',note:'do not demolish or open any wall'},
+{n:'Japandi',c:['#ede2ce','#a5a48e','#d0b996','#f7f3e8'],pal:'sand, pale oak, ivory, sage',floor:'seamless sand-colored microcement in living areas, pale oak parquet in bedrooms, matte natural limestone in bathrooms',living:'low ivory linen sofa, sculptural pale oak coffee table, simple lounge chairs, natural woven rug',dining:'minimal solid oak dining table with Scandinavian chairs',kitchen:'matte sand cabinets with ash fronts, light stone worktop',bed:'low wooden platform beds with linen bedding',bath:'limestone vanity, matte fixtures',note:'one or two ceramics only'},
+{n:'Scandinavian',c:['#f0f0e9','#c0c7c4','#cfad79','#aab4c2'],pal:'white, blond oak, light grey, soft blue',floor:'matte pale oak in dry areas, warm light-grey porcelain in kitchen and bathrooms',living:'light grey or cream sofa, light oak coffee table, Nordic lounge chair, pale wool rug',dining:'natural oak dining table with light chairs',kitchen:'matte white base units, light oak accents, pale solid-surface worktop',bed:'simple oak beds with textured bedding, compact desks only where a room is clearly large enough',bath:'floating white vanity',note:'limited pastel accents'},
+{n:'Wabi-Sabi',c:['#d2baa2','#ad876d','#e4d7c5','#756b61'],pal:'clay, earth, stone, mineral beige',floor:'clay-toned microcement in living areas, weathered oak in bedrooms, sealed raw-looking limestone in bathrooms',living:'low soft beige sofa, handcrafted asymmetrical wood coffee table, organic lounge chair, natural woven rug',dining:'thick handmade wooden dining table',kitchen:'clay-beige flat-front cabinets, textured stone-effect worktop',bed:'simple low timber beds with layered raw linen',bath:'stone vanity and shower',note:'subtle material imperfection, nothing damaged'},
+{n:'Mediterranean Modern',c:['#f0dfbc','#d8a176','#b36d4a','#9b9b72'],pal:'travertine, cream, terracotta, olive green',floor:'honed ivory travertine in living areas, light oak parquet in bedrooms, warm limestone in bathrooms, a few terracotta tiles only in the kitchen',living:'cream linen modular sofa, pale timber lounge chairs, sculptural travertine coffee table, textured natural rug',dining:'solid oak dining table with woven chairs',kitchen:'warm off-white and oak cabinets, light limestone worktop',bed:'cream upholstered beds',bath:'limestone vanity and shower',note:'olive-green accents used sparingly; do not add arches or change any opening'},
+{n:'Modern Classic',c:['#eae0d2','#c5aa82','#8b775e','#f4eee6'],pal:'ivory, champagne, beige, brass',floor:'oak herringbone parquet in living areas and bedrooms, ivory marble in the entrance and bathrooms',living:'curved cream sofa, two classical-inspired upholstered armchairs, sculptural marble coffee table, symmetrical arrangement',dining:'refined wooden or stone dining table with high-back chairs',kitchen:'cream paneled cabinetry, light stone worktop, discreet brass handles',bed:'upholstered beds with symmetrical bedside tables, velvet and linen',bath:'refined marble vanity, brass taps',note:'moderate decoration only'},
+{n:'Art Deco',c:['#1b3e34','#11161c','#b38a50','#e5d4af'],pal:'emerald, black, antique gold, ivory',floor:'geometric black-and-ivory marble accents in the living area, dark walnut parquet in bedrooms, black-and-cream stone in bathrooms',living:'curved emerald velvet sofa, black and brass lounge chairs, geometric marble coffee table, geometric rug',dining:'glossy walnut or black stone dining table with velvet chairs',kitchen:'dark lacquer or walnut cabinets, black marble-effect worktop, brass hardware',bed:'upholstered beds with geometric headboards',bath:'black stone vanity, brass fittings',note:'brass used sparingly'},
+{n:'Quiet Luxury',c:['#e3d8c7','#ab9d87','#715c47','#f5ede2'],pal:'taupe, cream, walnut, natural stone',floor:'honed ivory travertine in living areas, smoked oak in bedrooms, warm limestone in bathrooms',living:'few large low pieces: bespoke oatmeal sofa, walnut and stone coffee tables, lounge chairs, muted rug',dining:'solid walnut dining table with tailored chairs',kitchen:'full-height walnut and warm taupe cabinetry, honed stone worktop',bed:'neutral upholstered beds with linen bedding',bath:'limestone vanities',note:'no pattern, no contrast accents, very few objects'},
+{n:'Modern Oriental',c:['#e5d5b7','#965e43','#67442b','#b28f5f'],pal:'sand, terracotta, bronze, dark wood',floor:'warm beige limestone-effect tiles in living areas, walnut parquet in bedrooms, matte limestone in bathrooms, with a limited zellige accent area in the kitchen and bathrooms',living:'generous cream sofa, restrained dark wood coffee table, lounge chairs, natural geometric rug',dining:'rich walnut dining table with upholstered chairs',kitchen:'walnut cabinetry, ivory stone worktop, bronze fittings',bed:'large neutral beds with dark walnut wardrobes',bath:'limestone showers, bronze fittings',note:'do not add arches, courtyards or partitions'},
+{n:'Classic Mid-Century Modern',c:['#b78d59','#7f4e30','#c69f4c','#687653'],pal:'teak, cognac, mustard, olive',floor:'medium-toned teak or walnut parquet in dry areas, retro terrazzo in the entrance and bathrooms',living:'low cognac leather sofa, two lounge chairs, organically shaped walnut coffee table, tapered-leg sideboard, geometric woven rug',dining:'rectangular teak dining table with slim walnut chairs',kitchen:'walnut veneer cabinets, muted cream worktop',bed:'low walnut beds with tapered-leg bedside tables',bath:'terrazzo floor, walnut vanity',note:'mustard and olive only as small accents'},
+{n:'Bohemian Chic',c:['#e8d9c1','#b89b78','#bb7763','#849079'],pal:'cream, rattan, terracotta, leaf green',floor:'matte pale oak parquet in bedrooms and living areas, warm sandy stone-look tiles in kitchen and bathrooms',living:'relaxed cream sofa, wooden coffee table with irregular grain, two woven lounge chairs, layered jute and wool rugs',dining:'light timber dining table with rattan chairs',kitchen:'warm ivory and oak cabinets, light stone worktop',bed:'cream beds with cane headboards',bath:'sand-tiled bathrooms',note:'a few indoor plants of realistic size'},
+{n:'Contemporary Brutalism',c:['#8e9090','#43474c','#1d2025','#b2a99b'],pal:'concrete grey, charcoal, basalt, black',floor:'large-format grey concrete-effect porcelain in living areas, smoked dark oak in bedrooms, polished black basalt-effect tiles in bathrooms',living:'low charcoal modular sofa, monolithic stone coffee table, angular lounge chairs, dark rug',dining:'geometric solid wood or stone-look dining table with black chairs',kitchen:'charcoal handleless cabinets, graphite worktop',bed:'low smoked-oak platform beds with charcoal headboards, off-white linen bedding to soften the palette',bath:'basalt vanity',note:'keep every room clearly readable; do not add concrete walls'},
+{n:'Dark Walnut Mid-Century Modern',c:['#4c2a1e','#171819','#9b704d','#c5a67c'],pal:'dark walnut, black leather, chrome, cream, amber',floor:'dark walnut plank flooring with satin sheen in living areas and bedrooms, charcoal terrazzo in bathrooms',living:'low black leather three-seat sofa, two black leather and chrome tubular-frame lounge chairs, long low dark table with glass top',dining:'rectangular walnut table with black leather chairs',kitchen:'dark walnut cabinetry, dark stone worktop, chrome taps',bed:'low beds with walnut headboards, symmetrical walnut bedside tables, ivory bedding; slightly lighter walnut in secondary bedrooms',bath:'charcoal terrazzo, chrome fittings',note:'keep every room bright enough to read from above; avoid light Scandinavian woods and bright colors'}
+];
+
+/* V2.2: per-style extras. char = upholstery/finish character used when the plan is already furnished (no objects named);
+   bed2 = clauses that only make sense with several bedrooms; adds = the note introduces objects (dropped on furnished plans). */
+const EXTRA=[
+{char:'off-white and cream upholstery, pale stone and light oak surfaces, slim minimal frames'},
+{char:'cream and champagne upholstery, marble and walnut surfaces, bronze details'},
+{char:'rounded cream linen upholstery, walnut and oak surfaces, soft wool textures'},
+{char:'cognac leather upholstery, black steel frames, reclaimed wood and dark stone surfaces'},
+{char:'ivory linen upholstery, pale oak surfaces, simple low-profile frames',adds:true},
+{char:'light grey or cream upholstery, light oak frames, textured bedding',bed2:'compact desks only where a room is clearly large enough'},
+{char:'raw linen upholstery, handcrafted timber and stone surfaces, organic shapes'},
+{char:'cream linen upholstery, pale timber and travertine surfaces, woven seats'},
+{char:'cream velvet and linen upholstery, marble and refined wood surfaces, brass details'},
+{char:'emerald velvet and black upholstery, geometric marble and glossy walnut surfaces, brass details'},
+{char:'oatmeal and taupe upholstery, honed stone and walnut surfaces, no pattern'},
+{char:'cream upholstery, dark walnut surfaces, bronze details'},
+{char:'cognac leather upholstery, teak and walnut surfaces with tapered legs, small mustard and olive accents'},
+{char:'cream upholstery, rattan and cane details, warm timber surfaces',adds:true},
+{char:'charcoal upholstery, monolithic stone and dark wood surfaces, angular shapes'},
+{char:'black leather upholstery with chrome frames, dark walnut surfaces with satin sheen, ivory bedding, dark glass for any table top',bed2:'slightly lighter walnut in secondary bedrooms'}
+];
+S.forEach((s,i)=>Object.assign(s,EXTRA[i]));
+// remove the secondary-bedroom clauses from the base `bed` strings (now in bed2)
+S[5].bed='simple oak beds with textured bedding';
+S[15].bed='low beds with walnut headboards, symmetrical walnut bedside tables, ivory bedding';
+
+const LIGHT={
+ 'Lumière naturelle neutre':'soft neutral daylight entering through the existing window and balcony openings, soft contact shadows, gentle ambient occlusion',
+ 'Ambiance chaude fin de journée':'warm late-afternoon daylight entering through the existing openings, long soft-edged shadows across the floor',
+ 'Mix lumière naturelle et LED chaudes':'soft daylight through the existing openings plus a gentle warm 3000 K interior glow, soft shadows',
+ 'Ambiance nocturne':'evening ambiance with warm interior lighting and dimmer daylight through the existing openings, rooms still clearly readable from above'
+};
+const FID={
+ 'Priorité absolue':'Keep every furniture piece drawn on the plan at the same position, size and orientation and only restyle it.',
+ 'Strictement conserver la structure, permettre des meubles différents':'Structure and openings stay exactly as drawn. You may restyle the drawn furniture and adjust its arrangement where needed, never blocking a door or window.'
+};
+
+const $=id=>document.getElementById(id);
+const TEXT_IDS=['summary','rooms','structure','openings','wet','circulation','dimensions','uncertainties','furniture','palette','materials','extras','model'];
+const SELECT_IDS=['bedrooms','master','render','ratio','lighting','fidelity','style','mode','refimg','furnished','hatch'];
+const names=[...TEXT_IDS,...SELECT_IDS];
+
+S.forEach((s,i)=>{const o=document.createElement('option');o.value=i;o.textContent=String(i+1).padStart(2,'0')+' — '+s.n;$('style').append(o)});
+$('style').value=15;
+
+const RATIOS=[['16:9',16/9],['4:3',4/3],['3:2',3/2],['1:1',1],['9:16',9/16]];
+function suggestRatio(w,h){const r=w/h;return RATIOS.reduce((b,x)=>Math.abs(Math.log(r/x[1]))<Math.abs(Math.log(r/b[1]))?x:b)[0]}
+
+let fileData=null,previewURL=null,loadId=0,ratioNote='';
+const loadedStatus=name=>{$('aiStatus').textContent='Plan chargé : '+name+' — prêt pour la description manuelle ou l’analyse IA.'+ratioNote};
+$('plan').addEventListener('change',async()=>{
+  const f=$('plan').files[0],token=++loadId;
+  if(previewURL)URL.revokeObjectURL(previewURL);
+  fileData=null;ratioNote='';$('planPreview').hidden=true;$('pdfPreview').style.display='none';$('noPreview').hidden=!!f;
+  if(!f)return;
+  if(!['image/png','image/jpeg','image/webp','application/pdf'].includes(f.type)){
+    alert('Format non pris en charge : exportez votre plan en PNG, JPG ou PDF.');$('plan').value='';$('noPreview').hidden=false;return}
+  if(f.size>10_000_000){
+    alert('Taille maximale pour l’analyse IA : 10 Mo.');$('plan').value='';$('noPreview').hidden=false;return}
+  previewURL=URL.createObjectURL(f);
+  if(f.type==='application/pdf'){$('pdfPreview').src=previewURL;$('pdfPreview').style.display='block'}
+  else{
+    $('planPreview').src=previewURL;$('planPreview').hidden=false;
+    const im=new Image();
+    im.onload=()=>{
+      if(token!==loadId||!im.naturalWidth||!im.naturalHeight)return;
+      const r=suggestRatio(im.naturalWidth,im.naturalHeight);
+      $('ratio').value=r;ratioNote=' Format de sortie réglé sur '+r+' d’après le plan (modifiable).';
+      if(fileData)loadedStatus(f.name);
+      update();
+    };
+    im.src=previewURL;
+  }
+  $('aiStatus').textContent='Lecture du plan en cours…';
+  try{
+    const loaded=await new Promise((resolve,reject)=>{
+      const r=new FileReader();
+      r.onload=()=>resolve({mime:f.type,data:String(r.result).split(',')[1]});
+      r.onerror=()=>reject(new Error('Lecture du fichier impossible'));
+      r.readAsDataURL(f)});
+    if(token!==loadId)return; /* another file was chosen meanwhile */
+    fileData=loaded;loadedStatus(f.name);
+  }catch(err){if(token===loadId){fileData=null;$('aiStatus').textContent='Erreur de lecture du plan : '+err.message}}
+});
+
+$('analyze').onclick=async()=>{
+  if(!fileData){alert($('plan').files.length?'Le fichier est encore en cours de lecture ou n’a pas pu être lu. Veuillez patienter ou le sélectionner à nouveau.':'Importez un plan PNG, JPG, WEBP ou PDF.');return}
+  if(location.protocol==='file:'){alert('Pour l’analyse automatique, ouvrez l’application via le serveur Python local (DEMARRAGE_WINDOWS.bat).');return}
+  $('analyze').disabled=true;$('aiStatus').textContent='Analyse du plan par Gemini en cours...';
+  try{
+    const body={mime:fileData.mime,data:fileData.data},m=$('model').value.trim();
+    if(m)body.model=m;
+    const res=await fetch('/api/analyze',{method:'POST',headers:{'Content-Type':'application/json','X-Requested-With':'studio'},body:JSON.stringify(body)});
+    let val;
+    try{val=await res.json()}catch(_){throw new Error('Réponse inattendue du serveur (HTTP '+res.status+').')}
+    if(!res.ok)throw new Error(val.error||'Erreur inconnue');
+    const a=val.analysis;
+    if(!a||typeof a!=='object'||Array.isArray(a))throw new Error('Réponse d’analyse invalide.');
+    const j=v=>Array.isArray(v)?v.join('\n'):v;
+    const mapping={summary:a.summary,rooms:j(a.rooms),furniture:j(a.furniture),structure:a.structure,openings:a.openings,wet:a.wet_areas,circulation:a.circulation,dimensions:a.dimensions,uncertainties:j(a.uncertainties)};
+    const overwrite=$('overwrite').checked;let kept=0;
+    Object.entries(mapping).forEach(([k,v])=>{
+      if(v==null)return;
+      if(!overwrite&&$(k).value.trim()){kept++;return}
+      $(k).value=String(v)});
+    let bedNote='';const nb=parseInt(a.bedrooms,10);
+    if(nb>=1&&nb<=5&&(!bedTouched||overwrite)){$('bedrooms').value=String(nb);bedNote=' Nombre de chambres réglé sur '+nb+'.'}
+    $('aiStatus').textContent='Analyse terminée.'+bedNote+' '+(kept?kept+' champ(s) déjà rempli(s) conservé(s) (cochez « Écraser » pour les remplacer). ':'')+'Vérifiez et corrigez toutes les observations et cotes.';
+    update();
+  }catch(e){$('aiStatus').textContent='Erreur : '+e.message}
+  finally{$('analyze').disabled=false}
+};
+
+const val=id=>$(id).value.trim();
+const cap=t=>t?t.charAt(0).toUpperCase()+t.slice(1):t;
+
+
+/* ---- V2.3: provenance tags, furniture checklist, warnings ---- */
+const isSup=l=>/^\s*\[suppos[ée]\]/i.test(l);
+const stripSup=l=>l.replace(/^\s*\[suppos[ée]\]\s*/i,'');
+const DECOR_RE=/(plante|\bplants?\b|fleur|\bvases?\b|tapis|\brugs?\b|coussin|\blivres?\b|d[ée]cor|lampe|luminaire|bougie)/i;
+/* Drops every line or sentence that starts with [supposé]: unverified assumptions stay in the form but never reach the prompt. */
+function clean(t){
+  return t.split('\n').map(x=>x.trim()).filter(Boolean)
+    .map(line=>line.split(/(?<=[.!?])\s+/).filter(p=>!isSup(p)).join(' '))
+    .filter(x=>x.trim()&&!isSup(x)).join('\n');
+}
+let furnState={},bedTouched=false;
+const furnLines=()=>$('furniture').value.split('\n').map(x=>x.trim()).filter(Boolean);
+function syncFurn(){furnLines().forEach(l=>{if(!(l in furnState))furnState[l]=!(isSup(l)||DECOR_RE.test(l))})}
+const includedFurniture=()=>{syncFurn();return furnLines().filter(l=>furnState[l]!==false).map(stripSup)};
+function renderFurn(){
+  syncFurn();
+  const box=$('furnList');box.replaceChildren();
+  furnLines().forEach(l=>{
+    const row=document.createElement('label');
+    row.style.cssText='display:flex;gap:8px;align-items:flex-start;font-weight:400;font-size:12px;margin:3px 0';
+    const cb=document.createElement('input');cb.type='checkbox';cb.checked=furnState[l]!==false;cb.style.cssText='width:auto;margin:2px 0 0';
+    cb.addEventListener('change',()=>{furnState[l]=cb.checked;update()});
+    const tx=document.createElement('span');tx.textContent=stripSup(l);
+    row.append(cb,tx);
+    [[isSup(l),'supposé'],[DECOR_RE.test(l),'décor ?']].forEach(([on,txt])=>{
+      if(!on)return;const b=document.createElement('span');b.textContent=txt;
+      b.style.cssText='color:#cfad76;border:1px solid #cfad76;border-radius:4px;padding:0 5px;font-size:10px;white-space:nowrap';row.append(b)});
+    box.append(row);
+  });
+}
+const NUMW={un:1,une:1,deux:2,trois:3,quatre:4,cinq:5};
+function declaredBedrooms(){
+  const t=clean(val('summary')+'\n'+val('rooms')).toLowerCase();
+  let m=t.match(/\b(\d|un|une|deux|trois|quatre|cinq)\s+chambres?\b/);
+  if(m){const n=NUMW[m[1]]??+m[1];if(n>=1&&n<=5)return n}
+  m=t.match(/\bt([2-6])\b/);
+  return m?+m[1]-1:null;
+}
+function countSup(){
+  let n=0;
+  ['summary','rooms','structure','openings','wet','circulation'].forEach(id=>{
+    val(id).split('\n').forEach(line=>line.split(/(?<=[.!?])\s+/).forEach(p=>{if(isSup(p))n++}))});
+  syncFurn();furnLines().forEach(l=>{if(isSup(l)&&furnState[l]===false)n++});
+  return n;
+}
+function renderWarnings(){
+  const W=[],beds=+$('bedrooms').value,dec=declaredBedrooms();
+  const furnished=$('furnished').value.startsWith('Plan déjà meublé');
+  if(dec!==null&&dec!==beds)W.push(`La fiche parle de ${dec} chambre(s), mais « Nombre de chambres » est réglé sur ${beds}. Le prompt suit le réglage.`);
+  if(furnished){
+    const decor=includedFurniture().filter(l=>DECOR_RE.test(l));
+    if(decor.length)W.push(`La liste de meubles inclut du décor (${decor.join(' ; ')}) alors que le prompt interdit d’ajouter décor et plantes non dessinés. Décochez ces lignes ou vérifiez qu’ils sont vraiment dessinés.`);
+  }else if(furnLines().length)W.push('Plan vide : la liste « Meubles dessinés » n’est pas utilisée dans le prompt.');
+  const sup=countSup();
+  if(sup)W.push(`${sup} élément(s) marqué(s) [supposé] sont exclus du prompt. Vérifiez-les sur le plan puis supprimez la balise pour les inclure.`);
+  const box=$('warnings');
+  box.replaceChildren(...W.map(w=>{const p=document.createElement('div');p.textContent='⚠ '+w;p.style.margin='2px 0';return p}));
+  box.style.display=W.length?'block':'none';
+}
+
+function build(){
+  const s=S[+$('style').value]||S[0];
+  const full=$('mode').value==='Complet',ref=$('refimg').value.startsWith('Jointe');
+  const is3d=$('render').value.startsWith('Vue 3D'),furnished=$('furnished').value.startsWith('Plan déjà meublé');
+  const beds=+$('bedrooms').value,master=$('master').value==='Oui',hatch=$('hatch').value;
+  const bedText=s.bed+(beds>1&&s.bed2?'; '+s.bed2:'');
+  const L=[];
+
+  L.push(ref
+    ?'IMAGE ROLES: Image 1 = the 2D floor plan (geometry ONLY). Image 2 = style reference (materials, palette and mood ONLY; do not copy its layout, composition or objects). The style notes below complete Image 2.'
+    :'IMAGE ROLES: Image 1 = the 2D floor plan (geometry ONLY).');
+  L.push('');
+  L.push(is3d
+    ?`TASK: Create a photorealistic, fully furnished cutaway 3D render of this apartment in ${s.n} style. Keep the plan's orientation. Camera: high-angle view at about 75-80° elevation, roof and ceiling removed, walls cut at about 1.2 m so wall thickness is visible. Walls: smooth matte white plaster with crisp flat top edges. Plain neutral light-grey background.`
+    :`TASK: Create a photorealistic, fully furnished and textured 2D presentation plan of this apartment in ${s.n} style. Keep the plan's orientation. View: strictly top-down, flat, no perspective and no wall height; walls as solid thick poché with a thin dark outline; furniture seen from above with soft shadows. Plain white background.`);
+  L.push('');
+  L.push(beds===1
+    ?'PROGRAM: one bedroom only; no suite, no dressing room, no extra rooms. If this conflicts with the drawing, the drawing wins.'
+    :`PROGRAM: ${beds} bedrooms; master suite: ${master?'yes':'no'}. If this conflicts with the drawing, the drawing wins.`);
+  L.push('');
+
+  const g=['Preserve the footprint (including any diagonal or non-rectangular outer wall), walls, columns, doors, door swings, windows, balconies and room proportions exactly as drawn. Do not add, remove, move or resize any of them. Never invent dimensions or illegible details.'];
+  if(hatch.startsWith('Structure'))g.push('Hatched areas are structural columns and thick walls: render them as solid cut concrete in light grey, never as flooring.');
+  if(hatch.startsWith('Sol')||hatch==='Structure et sol')g.push('Hatching or stripes drawn on the floor are a flooring pattern, not geometry: render them as continuous flooring.');
+  g.push('Remove all dimension lines, numbers, labels and the plan title; no text anywhere.');
+  g.push('Furniture must fit each room at realistic scale, keep 80-90 cm walkways, and never block a door, a door swing or a window.');
+  g.push(furnished?(FID[$('fidelity').value]||FID['Priorité absolue']):'The plan is empty: furnish each room according to its label, using only furniture that fits.');
+  L.push('GEOMETRY (the plan always wins): '+g.join(' '),'');
+
+  const rows=[['Overview','summary'],['Rooms and positions','rooms'],['Structure and columns','structure'],['Doors, windows and balconies','openings'],['Kitchen, WC, water and drainage','wet'],['Entrance and circulation','circulation']];
+  if($('incl').checked)rows.push(['Confirmed readable dimensions','dimensions'],['Unclear on the drawing (never invent these)','uncertainties']);
+  const d=rows.map(([t,id])=>[t,clean(val(id))]).filter(([,v])=>v).map(([t,v])=>`${t}: ${v.replace(/\n+/g,'; ')}`);
+  if(d.length){L.push('PLAN DESCRIPTION (written by the user; the drawing wins if they differ):',...d,'')}
+
+  if(furnished){
+    const f=includedFurniture().join('; ');
+    L.push('FURNITURE (restyle only what is drawn; add nothing): '+(f?f+'.':'every piece drawn on the plan.')+' Do not add any piece, rug, plant or decor that is not drawn.','');
+  }
+
+  const pal=val('palette')||s.pal,mat=val('materials');
+  let style=`STYLE: ${s.n}. Palette: ${pal}. Floors: ${s.floor}.`;
+  if(furnished)style+=` Furniture character: ${s.char}. Kitchen finishes: ${s.kitchen}. Bathroom finishes: ${s.bath}.`;
+  else if(!full)style+=` Furniture: living room — ${s.living}; dining — ${s.dining}; kitchen — ${s.kitchen}; bedrooms — ${bedText}; bathrooms — ${s.bath}.`;
+  if(mat)style+=` Additional finish requirements: ${mat}.`;
+  if(s.note&&!(furnished&&s.adds))style+=` ${cap(s.note)}.`;
+  style+=' Apply finishes only to elements that exist in the plan; wet rooms use moisture-resistant materials.';
+  L.push(style,'');
+
+  if(full&&furnished){
+    L.push('ROOM BY ROOM:',
+      '- Kitchen: keep the plan\'s plumbing and wall layout; finishes as above.',
+      '- Bathrooms and WC: keep the drawn fixture layout and technical shafts.',
+      '- Entrance, halls, balconies: keep circulation open and openings intact.',
+      '');
+  }else if(full){
+    L.push('ROOM BY ROOM:',
+      `- Living room: ${s.living}. Credible circulation, correctly scaled seating.`,
+      `- Dining: ${s.dining}. Only where the plan provides space.`,
+      `- Kitchen: ${s.kitchen}. Keep the plan's plumbing and wall layout; no island or new opening unless drawn.`,
+      `- ${beds>1&&master?'Master bedroom':'Bedroom'}: ${bedText}. Add a dressing room or ensuite only if it already exists on the plan.`,
+      ...(beds>1?['- Other bedrooms: coordinated beds and storage in the same style.']:[]),
+      `- Bathrooms and WC: ${s.bath}. Keep the drawn fixture layout and technical shafts.`,
+      '- Entrance, halls, balconies: keep circulation open and openings intact; minimal furniture that never obstructs doors or glazing.',
+      '');
+  }
+
+  L.push(`LIGHT: ${LIGHT[$('lighting').value]||LIGHT['Lumière naturelle neutre']}.`);
+  L.push(`RENDER: photorealistic materials, crisp architectural edges, clean and uncluttered. Aspect ratio ${$('ratio').value}.`);
+  if(val('extras')){L.push('','ADDITIONAL REQUIREMENTS: '+val('extras'))}
+  L.push('','AVOID: added rooms, walls, doors or windows; moved or resized openings; '+(furnished?'furniture or decor that is not drawn; ':'')+'people or animals; text, labels, dimension lines or watermarks.');
+  if(full)L.push('If a hidden detail cannot be determined from the plan, choose the simplest plausible interpretation.');
+  return L.join('\n').trim()+'\n';
+}
+
+function update(){
+  renderFurn();
+  const s=S[+$('style').value]||S[0],pr=$('preview');
+  pr.style.cssText=`--c1:${s.c[0]};--c2:${s.c[1]};--c3:${s.c[2]};--c4:${s.c[3]}`;
+  $('swatches').replaceChildren(...s.c.map(c=>{const x=document.createElement('i');x.style.background=c;return x}));
+  $('styleDescription').textContent=cap(s.pal)+' — '+s.floor;
+  const out=build();
+  $('output').textContent=out;
+  renderWarnings();
+  $('wordCount').textContent='≈ '+out.split(/\s+/).filter(Boolean).length+' mots';
+  return out;
+}
+
+document.querySelectorAll('input:not([type=file]),select,textarea').forEach(x=>x.addEventListener('input',update));
+$('style').addEventListener('change',update);
+$('bedrooms').addEventListener('input',()=>{bedTouched=true});
+
+$('copy').onclick=async()=>{
+  const t=update();
+  try{await navigator.clipboard.writeText(t);$('copyStatus').textContent='Prompt copié.'}
+  catch(e){const b=document.createElement('textarea');b.value=t;document.body.append(b);b.select();document.execCommand('copy');b.remove();$('copyStatus').textContent='Copie effectuée (mode compatible).'}
+};
+$('download').onclick=()=>{
+  const blob=new Blob([update()],{type:'text/plain;charset=utf-8'}),a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);a.download='Architect_Prompt_'+S[+$('style').value].n.replaceAll(' ','_')+'.txt';a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+};
+$('save').onclick=()=>{
+  localStorage.setItem('architect_v2',JSON.stringify({...Object.fromEntries(names.map(k=>[k,$(k).value])),_furn:furnState}));
+  $('copyStatus').textContent='Réglages et description sauvegardés dans ce navigateur (sans le fichier du plan).';
+};
+$('reset').onclick=()=>{
+  if(!confirm('Effacer les champs et les préférences locales ?'))return;
+  localStorage.removeItem('architect_v2');
+  TEXT_IDS.forEach(k=>{$(k).value=''});furnState={};bedTouched=false;
+  $('style').value='15';$('bedrooms').value='3';$('master').value='Oui';$('ratio').value='16:9';
+  ['render','lighting','fidelity','mode','refimg','furnished','hatch'].forEach(k=>{$(k).selectedIndex=0});
+  $('overwrite').checked=false;$('incl').checked=false;
+  update();
+};
+try{
+  const saved=JSON.parse(localStorage.getItem('architect_v2')||'null');
+  if(saved){names.forEach(k=>{if(saved[k]!==undefined)$(k).value=saved[k]});
+    if(saved._furn&&typeof saved._furn==='object')furnState=saved._furn;
+    if(saved.bedrooms!==undefined)bedTouched=true}
+}catch(e){}
+update();
+</script></body></html>
